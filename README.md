@@ -72,9 +72,8 @@ pytest -q
 
 The tests in `tests/` cover helper functions that do not need a live database. Database-backed API endpoints should also be tested manually against a development database using `/docs`.
 
-## Submit
-A public Git repository with `app/main.py`, `requirements.txt`, `REVIEW.md`, `DECISIONS.md` and a short `README.md`.
-No `.env`, no secrets, no Dockerfile.
+## Submitted
+A REST API built using FastAPI and MongoDB to manage employee records and daily attendance. It supports punch-in, punch-out, attendance regularization, and attendance record management. It also provides monthly employee reports, department-wise summaries, late-arrival leaderboards, and department attendance trends. MongoDB indexes and aggregation pipelines help maintain data consistency and improve query performance.
 
 ## Instruction From the Kit
 Read in this order:
