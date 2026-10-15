@@ -4,14 +4,15 @@ This is a small Fastapi backend for employee records, attendance and attendance 
 
 ## Features
 
-- Create and list employees
-- Punch in and punch out
-- List attendance with filters and pagination
-- Regularize an attendance record and keep a change history
-- Monthly employee attendance summary
-- Department summary, late-arrival leaderboard and department trend
-- MongoDB query execution-plan endpoint
-- MongoDB indexes created when the application starts
+- Employee Management: Create and list employee records.
+- Attendance Tracking: Record employee punch-in and punch-out.
+- Attendance Records: Retrieve attendance records with filtering and pagination.
+- Attendance Regularization: Correct attendance records while maintaining change history.
+- Employee Analytics: Generate monthly attendance summaries.
+- Department Analytics: View department summaries and attendance trends.
+- Late Arrival Leaderboard: Rank employees based on late-arrival minutes.
+- Query Performance: Inspect MongoDB query execution statistics.
+- Data Consistency: Use MongoDB unique indexes to prevent duplicate employee codes and duplicate daily attendance records.
 
 ## Local setup
 ```bash
@@ -24,43 +25,29 @@ uvicorn app.main:app --port 8000 --reload
 ```
 MongoDB **6.0 or newer** is required (the grader uses 7.0). MongoDB Atlas free tier (M0) works.
 
-## Quick manual test
 
-Use Swagger UI (`/docs`) and try the APIs in this order:
+## API Endpoints
 
-1. `POST /employees`
-2. `GET /employees`
-3. `POST /attendance/punch-in`
-4. `POST /attendance/punch-out`
-5. `GET /attendance`
-6. Try the analytics APIs with a month in `YYYY-MM` format, for example `2026-10`.
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/health` | Check database connectivity |
+| `POST` | `/employees` | Create an employee |
+| `GET` | `/employees` | List employees |
+| `POST` | `/attendance/punch-in` | Record punch-in |
+| `POST` | `/attendance/punch-out` | Record punch-out |
+| `GET` | `/attendance` | List attendance records |
+| `PATCH` | `/attendance/{emp_code}/{date}` | Regularize attendance |
+| `GET` | `/analytics/employees/{emp_code}/monthly` | Get monthly employee analytics |
+| `GET` | `/analytics/departments/summary` | Get department summaries |
+| `GET` | `/analytics/leaderboard/late` | Get the late-arrival leaderboard |
+| `GET` | `/analytics/departments/{department}/trend` | Get department attendance trends |
+| `GET` | `/admin/explain/{endpoint}` | Inspect query execution statistics |
 
-Example employee request:
+## Database Design and Performance
 
-```json
-{
-  "emp_code": "EMP9001",
-  "name": "Rahul Sharma",
-  "email": "rahul@example.com",
-  "department": "Engineering",
-  "shift_start": "09:30",
-  "shift_end": "18:30",
-  "joined_on": "2026-01-15"
-}
-```
+MongoDB indexes support common employee and attendance queries. Unique indexes enforce employee-code uniqueness and one attendance record per employee per date.
 
-Example punch-in request:
-
-```json
-{
-  "emp_code": "EMP9001",
-  "status": "PRESENT"
-}
-```
-
-`punched_at` is optional. If supplied, it must be an integer Unix timestamp in milliseconds. Use a test employee code when testing and clean up test data from your development database if needed.
-
-For attendance regularization, check the request schema in Swagger. The request includes a reason and the name/identifier of the person making the change (`regularized_by`).
+Aggregation pipelines are used for attendance analytics, including monthly summaries, department reports, late-arrival rankings, and daily attendance trends.
 
 ## Run tests
 
